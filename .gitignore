@@ -2,4 +2,8 @@ debug.env
 debug.sh
 debugds2.env
 exports.sh
+drun.sh
+local.env
+local.sh
+
 

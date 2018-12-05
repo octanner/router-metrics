@@ -122,7 +122,49 @@ func sock(logline string) {
 	host := fieldmap["hostname"]
 	var fields string
 	var tags string
-	if !(strings.HasPrefix(host, "alamotest")) && len(words) > 9 && !strings.Contains(strings.Join(words, " "), "4813") {
+        if strings.Contains(logline,"code=H27") {
+           fmt.Println(words)
+           fmt.Println(fieldmap)
+           status := fieldmap["status"]
+           client_closed_time := fieldmap["client_closed_time"]
+           site_domain := fieldmap["site_domain"]
+           fwd := "\"" + strings.Split(fieldmap["fwd"], "%")[0] + "\""
+           tlsversion := "\"" + fieldmap["tlsversion"] + "\""
+           if sendfwdtlsversion {
+                  fields = "fwd=" + fwd + ",tlsversion=" + tlsversion + ","
+           }
+           tags = "fqdn=" + host
+           metricname := "router.client.closed.count"
+           value := "1"
+           send(metricname, tags, fields+"value="+value)
+           metricname = "router.client.closed.ms"
+           value = client_closed_time
+           send(metricname, tags, fields+"value="+value)
+           metricname = "router.status." + status
+           value = "1"
+           send(metricname, tags, fields+"value="+value)
+           metricname = "router.requests.count"
+           value = "1"
+           send(metricname, tags, fields+"value="+value)
+           if site_domain != "" {
+                        host = site_domain
+                        tags = "fqdn=" + host
+                        metricname = "router.client.closed.count"
+                        value = "1"
+                        send(metricname, tags, fields+"value="+value)
+                        metricname = "router.client.closed.ms"
+                        value = client_closed_time
+                        send(metricname, tags, fields+"value="+value)
+                        metricname = "router.status." + status
+                        value = "1"
+                        send(metricname, tags, fields+"value="+value)
+                        metricname = "router.requests.count"
+                        value = "1"
+                        send(metricname, tags, fields+"value="+value)
+           }
+        }
+
+	if !(strings.HasPrefix(host, "alamotest")) && len(words) > 9 && !strings.Contains(strings.Join(words, " "), "4813") && !strings.Contains(logline,"code=H27"){
 		status := fieldmap["status"]
 		service := fieldmap["service"]
 		connect := fieldmap["connect"]
@@ -171,7 +213,7 @@ func sock(logline string) {
 			send(metricname, tags, fields+"value="+value)
 			metricname = "router.requests.count"
 			value = "1"
-			send(metricname, tags, fields+",value="+value)
+			send(metricname, tags, fields+"value="+value)
 		}
 
 	}

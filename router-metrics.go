@@ -171,7 +171,7 @@ func sock(logline string) {
 			send(metricname, tags, fields+"value="+value)
 			metricname = "router.requests.count"
 			value = "1"
-			send(metricname, tags, fields+",value="+value)
+			send(metricname, tags, fields+"value="+value)
 		}
 
 	}

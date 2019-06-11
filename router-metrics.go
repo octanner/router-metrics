@@ -122,7 +122,7 @@ func sock(logline string) {
 	host := fieldmap["hostname"]
 	var fields string
 	var tags string
-        if strings.Contains(logline,"code=H27") {
+        if strings.Contains(logline,"code=H27") && !(strings.HasPrefix(host, "alamotest")) {
            fmt.Println(words)
            fmt.Println(fieldmap)
            status := fieldmap["status"]
